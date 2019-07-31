@@ -5,6 +5,7 @@ module IntacctRuby
   # a function to be sent to Intacct. Defined by a function type (e.g. :create),
   # an object type, (e.g. :customer), and parameters.
   class Function
+    attr_reader :detail
     ALLOWED_TYPES = %w(
       readByQuery
       read
@@ -21,6 +22,14 @@ module IntacctRuby
       @function_type = function_type.to_s
       @object_type = object_type.to_s
       @parameters = parameters
+      if @parameters.include?(:detail)
+        @detail = @parameters[:detail]
+        @parameters.delete(:detail)
+      end
+
+      if @parameters.include?(:name)
+        @parameters.delete(:name)
+      end
 
       validate_type!
     end
@@ -37,6 +46,18 @@ module IntacctRuby
           else
             xml << parameter_xml(@parameters)
           end
+        end
+      end
+
+      xml.target!
+    end
+
+    def special_to_xml
+      xml = Builder::XmlMarkup.new
+
+      xml.function controlid: controlid do
+        xml.tag!(@object_type, detail: @detail) do 
+          xml << parameter_xml(@parameters)
         end
       end
 

@@ -129,7 +129,11 @@ module IntacctRuby
         authentication_block
         @request.content do
           functions.each do |function|
-            @request << function.to_xml
+            if function.detail.blank? 
+              @request << function.to_xml
+            else
+              @request << function.special_to_xml
+            end
           end
         end
       end
