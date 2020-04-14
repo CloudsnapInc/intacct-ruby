@@ -35,6 +35,7 @@ module IntacctRuby
 
       # If a hash is provided + popped, the remaining attrs are functions
       @functions = functions
+      binding.pry
     end
 
     def to_xml
