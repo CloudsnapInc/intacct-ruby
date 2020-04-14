@@ -6,6 +6,7 @@ module IntacctRuby
     end
 
     def send_request(request_object, post_request = nil)
+      binding.pry
       post_request ||= Net::HTTP::Post.new(uri.request_uri)
 
       post_request['Content-Type'] = 'x-intacct-xml-request'
