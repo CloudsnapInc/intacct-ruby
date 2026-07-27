@@ -1,3 +1,5 @@
+require 'intacct_ruby/function'
+
 module IntacctRuby
   class LegacyFunction < Function
 
@@ -48,7 +50,9 @@ module IntacctRuby
       # Build the XML
       xml.function controlid: controlid do
         xml.tag! @object_type, attributes do
-          xml << parameter_xml(@parameters)
+          # top-level *keys are rendered as attributes above, so they must not
+          # also be emitted as elements
+          xml << parameter_xml(@parameters.reject { |k, _v| /^\*/.match(k) })
         end
       end
 

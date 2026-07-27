@@ -121,5 +121,20 @@ describe LegacyFunction do
         end
       end
     end
+
+    context 'given a top-level *key' do
+      let(:parameters) { { '*key' => 'CC1234', paymentmethod: 'Credit Card' } }
+
+      it 'renders the key as an attribute and not as an element' do
+        object = xml.xpath("//#{to_xml_key object_type}").first
+
+        expect(object.attributes['key'].value).to eq 'CC1234'
+        expect(object.xpath('key')).to be_empty
+      end
+
+      it 'produces error-free xml' do
+        expect(xml.errors).to be_empty
+      end
+    end
   end
 end

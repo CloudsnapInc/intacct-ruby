@@ -1,3 +1,4 @@
+require 'intacct_ruby/request'
 require 'intacct_ruby/legacy_function'
 
 module IntacctRuby
@@ -25,12 +26,14 @@ module IntacctRuby
 
     private #===================================================================
 
-    def method_missing(method_name, *arguments, &block)
+    def method_missing(method_name, **opts, &block)
       super unless LegacyFunction::ALLOWED_TYPES.include? method_name.to_s
+
+      # object_type is passed as a keyword, the rest are function parameters
       @functions << LegacyFunction.new(
         method_name,
-        object_type: arguments.shift,
-        parameters: arguments.shift || {}
+        object_type: opts.delete(:object_type),
+        **opts
       )
     end
 
