@@ -27,7 +27,11 @@ module IntacctRuby
 
     def method_missing(method_name, *arguments, &block)
       super unless LegacyFunction::ALLOWED_TYPES.include? method_name.to_s
-      @functions << LegacyFunction.new(method_name, arguments.shift, *arguments)
+      @functions << LegacyFunction.new(
+        method_name,
+        object_type: arguments.shift,
+        parameters: arguments.shift || {}
+      )
     end
 
     # Handles order enforcement of nested arrays since deep_merge does not.
